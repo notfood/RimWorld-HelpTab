@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{700C42E9-03E6-4247-A239-FC4EF64D6C1E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HelpTab</RootNamespace>
+    <AssemblyName>HelpTab</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\Assemblies\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HelpTab\HelpCategoryDef.cs" />
+    <Compile Include="HelpTab\MainButton_HelpMenuDef.cs" />
+    <Compile Include="HelpTab\HelpDef.cs" />
+    <Compile Include="HelpTab\MainTabWindow_ModHelp.cs" />
+    <Compile Include="Extensions\List_Extensions.cs" />
+    <Compile Include="Extensions\Def_Extensions.cs" />
+    <Compile Include="Extensions\Texture2D_Extensions.cs" />
+    <Compile Include="HelpTab\HelpDetailSection.cs" />
+    <Compile Include="HelpTab\HelpDetailSectionHelper.cs" />
+    <Compile Include="ResourceBank.cs" />
+    <Compile Include="HelpTab\StringDescTriplet.cs" />
+    <Compile Include="HelpTab\DefStringTriplet.cs" />
+    <Compile Include="Extensions\Vector3_Extensions.cs" />
+    <Compile Include="HelpTab\HelpBuilder.cs" />
+    <Compile Include="Extensions\BiomeDef_Extensions.cs" />
+    <Compile Include="Extensions\ThingDef_Extensions.cs" />
+    <Compile Include="Extensions\BuildableDef_Extensions.cs" />
+    <Compile Include="Extensions\RecipeDef_Extensions.cs" />
+    <Compile Include="Extensions\ResearchProjectDef_Extensions.cs" />
+    <Compile Include="HelpTabMod.cs" />
+    <Compile Include="HelpTab\IHelpDefView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Deployment.LinuxDeployData generatePcFile="False" />
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
