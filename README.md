@@ -19,6 +19,6 @@ Do you know the research name? Find it with the search by text toolbox and resea
 Supports every thing any mod adds. The perfect companion for navigating those complex mods.
 
 ## Credits
-A17 Update by NotFood
-A16 Update by Skyarkhangel
-Original mod by Fluffy
+- A17 Update by NotFood
+- A16 Update by Skyarkhangel
+- Original mod by Fluffy
