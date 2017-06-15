@@ -43,18 +43,6 @@ namespace HelpTab
         private bool _filtered;
         private bool _jump;
 
-        public override Vector2 RequestedTabSize
-        {
-            get
-            {
-                if (TabDef != null)
-                {
-                    return new Vector2(TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
-                }
-                return new Vector2(MinWidth, MinHeight);
-            }
-        }
-
         private MainButton_HelpMenuDef TabDef
         {
             get
@@ -82,27 +70,18 @@ namespace HelpTab
 
         #region Positioning overrides
 
-        public override void PostOpen()
-        {
-            base.PostOpen();
-
-            if (Current.ProgramState == ProgramState.Entry)
-            {
-                this.windowRect = new Rect(
-                    (Screen.width - RequestedTabSize.x) / 2,
-                    (Screen.height - RequestedTabSize.y) / 2,
-                    RequestedTabSize.x,
-                    RequestedTabSize.y);
-                this.absorbInputAroundWindow = true;
+        public override MainTabWindowAnchor Anchor {
+            get {
+                return MainTabWindowAnchor.Right;
             }
-            else
-            {
-                this.windowRect = new Rect(
-                    (Screen.width - RequestedTabSize.x),
-                    (Screen.height - RequestedTabSize.y - 35f),
-                    RequestedTabSize.x,
-                    RequestedTabSize.y);
-                this.absorbInputAroundWindow = false;
+        }
+
+        public override Vector2 RequestedTabSize {
+            get {
+                if (TabDef != null) {
+                    return new Vector2 (TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
+                }
+                return new Vector2 (MinWidth, MinHeight);
             }
         }
 

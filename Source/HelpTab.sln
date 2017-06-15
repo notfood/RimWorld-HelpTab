@@ -37,6 +37,12 @@ Global
 		$7.String = Exception
 		$0.VersionControlPolicy = $8
 		$8.inheritsSet = Mono
+		$0.TextStylePolicy = $9
+		$9.FileWidth = 120
+		$9.NoTabsAfterNonTabs = True
+		$9.inheritsSet = VisualStudio
+		$9.inheritsScope = text/plain
+		$9.scope = text/plain
 		outputpath = ../Assemblies
 	EndGlobalSection
 EndGlobal
