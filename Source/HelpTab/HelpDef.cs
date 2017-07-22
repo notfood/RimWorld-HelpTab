@@ -32,7 +32,7 @@ namespace HelpTab
             var d = obj as HelpDef;
             return
                 (d != null)
-                ? d.label.CompareTo(label) * -1
+                ? string.Compare(d.label, label) * -1
                 : 1;
         }
 
@@ -69,8 +69,7 @@ namespace HelpTab
 
         public bool MatchesFilter(string filter)
         {
-            return filter == "" || LabelCap.ToUpper().Contains(filter.ToUpper());
-
+            return filter == "" || LabelCap != null && LabelCap.IndexOf (filter, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         #endregion
