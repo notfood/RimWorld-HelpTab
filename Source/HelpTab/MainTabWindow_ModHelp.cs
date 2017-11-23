@@ -280,13 +280,13 @@ namespace HelpTab
 				Text.Anchor = TextAnchor.MiddleCenter;
 
 				if (research.IsFinished) {
-					Widgets.DrawMenuSection (researchRect, true);
+					Widgets.DrawMenuSection (researchRect);
 					Widgets.Label (researchRect, ResourceBank.String.Finished);
 				} else if (research == Find.ResearchManager.currentProj) {
-					Widgets.DrawMenuSection (researchRect, true);
+					Widgets.DrawMenuSection (researchRect);
 					Widgets.Label (researchRect, ResourceBank.String.InProgress);
 				} else if (!research.CanStartNow) {
-					Widgets.DrawMenuSection (researchRect, true);
+					Widgets.DrawMenuSection (researchRect);
 					Widgets.Label (researchRect, ResourceBank.String.Locked);
 				} else if (Widgets.ButtonText (researchRect, ResourceBank.String.Research, true, false, true)) {
 					SoundDef.Named ("ResearchStart").PlayOneShotOnCamera (null);

@@ -3,10 +3,9 @@ using Verse;
 
 namespace HelpTab
 {
-
-    [StaticConstructorOnStartup]
     public static class ResourceBank
     {
+        [StaticConstructorOnStartup]
 		public static class Icon {
 			/*
 			public static readonly Texture2D GrowZone = ContentFinder<Texture2D>.Get ("UI/Designators/ZoneCreate_Growing");
@@ -21,6 +20,7 @@ namespace HelpTab
 			public static readonly Texture2D HelpMenuArrowRight = ContentFinder<Texture2D>.Get ("UI/HelpMenu/ArrowRight");
 		}
 
+        [StaticConstructorOnStartup]
 		public static class String {
 			public static readonly string Finished = "Finished".Translate ();
 			public static readonly string InProgress = "InProgress".Translate ();
