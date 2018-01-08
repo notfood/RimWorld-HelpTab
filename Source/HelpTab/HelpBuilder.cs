@@ -18,7 +18,7 @@ namespace HelpTab
 
         #region Instance Data
 
-		private static readonly string HelpPostFix = "_HelpCategoryDef",
+		static readonly string HelpPostFix = "_HelpCategoryDef",
 
 			// items
 			ApparelHelp = "Apparel" + HelpPostFix,
@@ -90,7 +90,7 @@ namespace HelpTab
             ResolveReferences();
         }
 
-        private static void ResolveReferences()
+        static void ResolveReferences()
         {
             foreach (var helpCategory in DefDatabase<HelpCategoryDef>.AllDefsListForReading)
             {
@@ -103,7 +103,7 @@ namespace HelpTab
 
         #region Item Resolvers
 
-        private static void ResolveApparel()
+        static void ResolveApparel()
         {
             // Get list of things
             var thingDefs =
@@ -126,16 +126,14 @@ namespace HelpTab
             );
         }
 
-        private static void ResolveBodyParts()
+        static void ResolveBodyParts()
         {
             // Get list of things
-            var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.thingClass == typeof(ThingWithComps)) &&
-                 (
-                     (t.isBodyPartOrImplant)
-                 )
-             )).ToList();
+            var thingDefs = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where typeof(ThingWithComps).IsAssignableFrom(thing.thingClass) && thing.isBodyPartOrImplant
+                select thing
+            ).ToList();
 
             if (thingDefs.NullOrEmpty())
             {
@@ -152,14 +150,14 @@ namespace HelpTab
             );
         }
 
-        private static void ResolveDrugs()
+        static void ResolveDrugs()
         {
             // Get list of things
-            var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.IsIngestible) &&
-                 (t.IsDrug)
-             )).ToList();
+            var thingDefs = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where thing.IsIngestible && thing.IsDrug
+                select thing
+            ).ToList();
 
             if (thingDefs.NullOrEmpty())
             {
@@ -176,14 +174,15 @@ namespace HelpTab
             );
         }
 
-        private static void ResolveMeals()
+        static void ResolveMeals()
         {
             // Get list of things
-            var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.IsNutritionGivingIngestible) 
-                 && !t.IsDrug && t.category != ThingCategory.Plant
-             )).ToList();
+            var thingDefs = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where thing.IsNutritionGivingIngestible
+                && !thing.IsDrug && thing.category != ThingCategory.Plant
+                select thing
+            ).ToList();
 
             if (thingDefs.NullOrEmpty())
             {
@@ -200,14 +199,14 @@ namespace HelpTab
             );
         }
 
-        private static void ResolveWeapons()
+        static void ResolveWeapons()
         {
             // Get list of things
-            var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.IsWeapon) &&
-                 (t.category == ThingCategory.Item)
-             )).ToList();
+            var thingDefs = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where thing.IsWeapon
+                select thing
+            ).ToList();
 
             if (thingDefs.NullOrEmpty())
             {
@@ -228,39 +227,42 @@ namespace HelpTab
 
         #region Building Resolvers
 
-        private static void ResolveBuildings()
+        static void ResolveBuildings()
         {
             // Go through buildings by designation categories
             foreach (var designationCategoryDef in DefDatabase<DesignationCategoryDef>.AllDefsListForReading)
             {
                 // Get list of things
-                var thingDefs =
-                    DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                     t.designationCategory == designationCategoryDef
-                 )).ToList();
+                var thingDefs = (
+                    from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                    where thing.designationCategory == designationCategoryDef
+                    select thing
+                ).ToList();
 
-                if (!thingDefs.NullOrEmpty())
+                if (thingDefs.NullOrEmpty())
                 {
-                    // Get help category
-                    var helpCategoryDef = HelpCategoryForKey(designationCategoryDef.defName + "_Building" + HelpPostFix, designationCategoryDef.label, ResourceBank.String.AutoHelpCategoryBuildings);
-
-                    // Scan through all possible buildable defs and auto-generate help
-                    ResolveDefList(
-                        thingDefs,
-                        helpCategoryDef
-                    );
+                    continue;
                 }
+
+                // Get help category
+                var helpCategoryDef = HelpCategoryForKey (designationCategoryDef.defName + "_Building" + HelpPostFix, designationCategoryDef.label, ResourceBank.String.AutoHelpCategoryBuildings);
+
+                // Scan through all possible buildable defs and auto-generate help
+                ResolveDefList (
+                    thingDefs,
+                    helpCategoryDef
+                );
             }
         }
 
-        private static void ResolveMinifiableOnly()
+        static void ResolveMinifiableOnly()
         {
             // Get list of things
-            var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.Minifiable) &&
-                 (t.designationCategory == null)
-             )).ToList();
+            var thingDefs = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where thing.Minifiable && thing.designationCategory == null
+                select thing
+            ).ToList();
 
             if (thingDefs.NullOrEmpty())
             {
@@ -281,7 +283,7 @@ namespace HelpTab
 
         #region Terrain Resolver
 
-        private static void ResolveTerrain()
+        static void ResolveTerrain()
         {
             // Get list of terrainDefs without designation category that occurs as a byproduct of mining (rocky),
             // or is listed in biomes (natural terrain). This excludes terrains that are not normally visible (e.g. Underwall).
@@ -332,17 +334,17 @@ namespace HelpTab
 
         #region Flora and Fauna resolvers
 
-        private static void ResolvePlants()
+        static void ResolvePlants()
         {
             // plants
-            List<ThingDef> plants = DefDatabase<ThingDef>.AllDefsListForReading.Where(t => t.plant != null).ToList();
-            HelpCategoryDef category = HelpCategoryForKey(Plants, ResourceBank.String.AutoHelpSubCategoryPlants,
+            var plants = DefDatabase<ThingDef>.AllDefsListForReading.Where(t => t.plant != null).ToList();
+            var category = HelpCategoryForKey(Plants, ResourceBank.String.AutoHelpSubCategoryPlants,
                                                ResourceBank.String.AutoHelpCategoryFloraAndFauna);
 
             ResolveDefList(plants, category);
         }
 
-        private static void ResolvePawnkinds()
+        static void ResolvePawnkinds()
         {
             // animals
             List<PawnKindDef> pawnkinds =
@@ -365,7 +367,7 @@ namespace HelpTab
 
         }
 
-        private static void ResolveBiomes()
+        static void ResolveBiomes()
         {
             var biomes = DefDatabase<BiomeDef>.AllDefsListForReading;
             var category = HelpCategoryForKey(Biomes, ResourceBank.String.AutoHelpSubCategoryBiomes,
@@ -377,15 +379,16 @@ namespace HelpTab
 
         #region Recipe Resolvers
 
-        private static void ResolveRecipes()
+        static void ResolveRecipes()
         {
             // Get the thing database of things which ever have recipes
-            var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.EverHasRecipes()) &&
-                 (t.thingClass != typeof(Corpse)) &&
-                 (t.category != ThingCategory.Pawn)
-             )).ToList();
+            var thingDefs = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where thing.EverHasRecipes ()
+                && typeof (Corpse).IsAssignableFrom (thing.thingClass)
+                && thing.category != ThingCategory.Pawn
+                select thing
+            ).ToList();
 
             // Get help database
             var helpDefs = DefDatabase<HelpDef>.AllDefsListForReading;
@@ -428,7 +431,7 @@ namespace HelpTab
 
         #region Research Resolvers
 
-        private static void ResolveResearch()
+        static void ResolveResearch()
         {
             // Get research database
             var researchProjectDefs =
@@ -450,7 +453,7 @@ namespace HelpTab
 
         #region Help Makers
 
-        private static void ResolveDefList<T>(List<T> defs, HelpCategoryDef category) where T : Def
+        static void ResolveDefList<T>(IEnumerable<T> defs, HelpCategoryDef category) where T : Def
         {
             // Get help database
             HashSet<Def> processedDefs =
@@ -466,8 +469,8 @@ namespace HelpTab
 					HelpDef helpDef = null;
 					try {
 						helpDef = HelpForDef (def, category);
-					} catch {
-						Log.Warning ("HelpTab :: Failed to build help for: " + def);
+					} catch (Exception e) {
+						Log.Warning ("HelpTab :: Failed to build help for: " + def + "\n\t" + e);
 					}
 
 					// Inject the def
@@ -478,7 +481,7 @@ namespace HelpTab
             }
         }
 
-        private static HelpCategoryDef HelpCategoryForKey(string key, string label, string modname)
+        static HelpCategoryDef HelpCategoryForKey(string key, string label, string modname)
         {
             // Get help category
             var helpCategoryDef = DefDatabase<HelpCategoryDef>.GetNamed(key, false);
@@ -498,7 +501,7 @@ namespace HelpTab
             return helpCategoryDef;
         }
 
-        private static HelpDef HelpForDef<T>(T def, HelpCategoryDef category) where T : Def
+        static HelpDef HelpForDef<T>(T def, HelpCategoryDef category) where T : Def
         {
 			// both thingdefs (buildings, items) and terraindefs (floors) are derived from buildableDef
 			if (def is BuildableDef)
@@ -524,7 +527,7 @@ namespace HelpTab
             return null;
         }
 
-        private static HelpDef HelpForBuildable(BuildableDef buildableDef, HelpCategoryDef category)
+        static HelpDef HelpForBuildable(BuildableDef buildableDef, HelpCategoryDef category)
         {
             // we need the thingdef in several places
             ThingDef thingDef = buildableDef as ThingDef;
@@ -969,7 +972,7 @@ namespace HelpTab
             return helpDef;
         }
 
-        private static HelpDef HelpForRecipe(ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category)
+        static HelpDef HelpForRecipe(ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category)
         {
             var helpDef = new HelpDef();
             helpDef.keyDef = recipeDef;
@@ -1079,7 +1082,7 @@ namespace HelpTab
             return helpDef;
         }
 
-        private static HelpDef HelpForResearch(ResearchProjectDef researchProjectDef, HelpCategoryDef category)
+        static HelpDef HelpForResearch(ResearchProjectDef researchProjectDef, HelpCategoryDef category)
         {
             var helpDef = new HelpDef();
             helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
@@ -1192,7 +1195,7 @@ namespace HelpTab
             return helpDef;
         }
 
-        private static HelpDef HelpForBiome(BiomeDef biomeDef, HelpCategoryDef category)
+        static HelpDef HelpForBiome(BiomeDef biomeDef, HelpCategoryDef category)
         {
             var helpDef = new HelpDef();
             helpDef.keyDef = biomeDef;
@@ -1200,9 +1203,6 @@ namespace HelpTab
             helpDef.label = biomeDef.label;
             helpDef.category = category;
             helpDef.description = biomeDef.description;
-
-            List<Def> defs = new List<Def>();
-            List<string> chances = new List<string>();
 
             #region Generic (temp, rainfall, elevation)
             // we can't get to these stats. They seem to be hardcoded in RimWorld.Planet.WorldGenerator_Grid.BiomeFrom()
@@ -1212,62 +1212,82 @@ namespace HelpTab
 
             #region Diseases
 
-            var diseases = biomeDef.AllDiseases();
-            if (!diseases.NullOrEmpty())
+            var diseases = (
+                from incident in DefDatabase<IncidentDef>.AllDefsListForReading
+                where incident.diseaseBiomeRecords != null
+                from record in incident.diseaseBiomeRecords
+                where record.biome == biomeDef && record.commonality > 0
+                select incident
+            ).ToList();
+
+            if (diseases.Count > 0)
             {
+
+                var defs = new List<Def> (diseases.Count);
+                var chances = new List<string> (diseases.Count);
+
                 foreach (var disease in diseases)
                 {
                     var diseaseCommonality = biomeDef.CommonalityOfDisease(disease) / (biomeDef.diseaseMtbDays * GenDate.DaysPerYear);
-                    defs.Add(disease.diseaseIncident);
+
                     chances.Add(diseaseCommonality.ToStringPercent());
+                    defs.Add (disease.diseaseIncident);
                 }
 
                 helpDef.HelpDetailSections.Add(new HelpDetailSection(
                                                     ResourceBank.String.AutoHelpListBiomeDiseases,
                                                     defs, null, chances.ToArray()));
             }
-            defs.Clear();
 
             #endregion
 
             #region Terrain
 
-            defs = biomeDef.AllTerrainDefs().ConvertAll(def => (Def)def);
+            var terrains = biomeDef.AllTerrainDefs().ConvertAll(def => (Def)def);
             // commonalities unknown
-            if (!defs.NullOrEmpty())
+            if (!terrains.NullOrEmpty())
             {
                 helpDef.HelpDetailSections.Add(new HelpDetailSection(
                                                     ResourceBank.String.AutoHelpListBiomeTerrain,
-                                                    defs));
+                                                    terrains));
             }
 
             #endregion
 
             #region Plants
 
-            defs = DefDatabase<ThingDef>.AllDefsListForReading
-                                        .Where(t => biomeDef.AllWildPlants.Contains(t))
-                                        .ToList().ConvertAll(def => (Def)def);
-            if (!defs.NullOrEmpty())
+            var plants = (
+                from thing in DefDatabase<ThingDef>.AllDefsListForReading
+                where thing.plant != null && thing.plant.wildBiomes != null
+                from record in thing.plant.wildBiomes
+                where record.biome == biomeDef && record.commonality > 0
+                select thing as Def
+            ).ToList();
+
+            if (!plants.NullOrEmpty())
             {
                 helpDef.HelpDetailSections.Add(new HelpDetailSection(
                                                     ResourceBank.String.AutoHelpListBiomePlants,
-                                                    defs));
+                                                    plants));
             }
 
             #endregion
 
             #region Animals
 
-            defs = DefDatabase<PawnKindDef>.AllDefsListForReading
-                                        .Where(t => biomeDef.AllWildAnimals.Contains(t))
-                                        .Distinct()
-                                        .ToList().ConvertAll(def => (Def)def);
-            if (!defs.NullOrEmpty())
+            var animals = (
+                from pawnKind in DefDatabase<PawnKindDef>.AllDefs
+                where pawnKind.RaceProps != null && pawnKind.RaceProps.wildBiomes != null
+                from record in pawnKind.RaceProps.wildBiomes
+                where record.biome == biomeDef && record.commonality > 0
+                select pawnKind as Def
+            ).ToList ();
+
+            if (!animals.NullOrEmpty())
             {
                 helpDef.HelpDetailSections.Add(new HelpDetailSection(
                                                     ResourceBank.String.AutoHelpListBiomeAnimals,
-                                                    defs));
+                                                    animals));
             }
 
             #endregion
@@ -1275,7 +1295,7 @@ namespace HelpTab
             return helpDef;
         }
 
-        private static HelpDef HelpForPawnKind(PawnKindDef kindDef, HelpCategoryDef category)
+        static HelpDef HelpForPawnKind(PawnKindDef kindDef, HelpCategoryDef category)
         {
             // we need the thingdef in several places
             ThingDef raceDef = kindDef.race;
@@ -1320,7 +1340,7 @@ namespace HelpTab
 
         #region Help maker helpers
 
-        private static void HelpPartsForTerrain(TerrainDef terrainDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts)
+        static void HelpPartsForTerrain(TerrainDef terrainDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts)
         {
             statParts.Add(new HelpDetailSection(null,
                                                   new[]
@@ -1347,7 +1367,7 @@ namespace HelpTab
 
         }
 
-        private static void HelpPartsForPlant(ThingDef thingDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts)
+        static void HelpPartsForPlant(ThingDef thingDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts)
         {
             var plant = thingDef.plant;
 
@@ -1384,16 +1404,19 @@ namespace HelpTab
                                                       plant.sowTags.ToArray(), null, null));
             }
 
-            // wild biome tags
-            var biomes = DefDatabase<BiomeDef>.AllDefsListForReading.Where(b => b.AllWildPlants.Contains(thingDef)).ToList();
-            if (!biomes.NullOrEmpty())
-            {
-                linkParts.Add(new HelpDetailSection(ResourceBank.String.AutoHelpListAppearsInBiomes,
-                                                      biomes.Select(r => r as Def).ToList()));
+            // biomes
+            if (!plant.wildBiomes.NullOrEmpty()) {
+                var biomes = (
+                    from record in plant.wildBiomes
+                    where record.commonality > 0
+                    select record.biome as Def
+                ).ToList ();
+
+                linkParts.Add (new HelpDetailSection (ResourceBank.String.AutoHelpListAppearsInBiomes, biomes));
             }
         }
 
-        private static void HelpPartsForAnimal(PawnKindDef kindDef, ref List<HelpDetailSection> statParts,
+        static void HelpPartsForAnimal(PawnKindDef kindDef, ref List<HelpDetailSection> statParts,
                                         ref List<HelpDetailSection> linkParts)
         {
             RaceProperties race = kindDef.race.race;
