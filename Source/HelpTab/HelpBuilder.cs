@@ -385,7 +385,7 @@ namespace HelpTab
             var thingDefs = (
                 from thing in DefDatabase<ThingDef>.AllDefsListForReading
                 where thing.EverHasRecipes ()
-                && typeof (Corpse).IsAssignableFrom (thing.thingClass)
+                && !typeof (Corpse).IsAssignableFrom (thing.thingClass)
                 && thing.category != ThingCategory.Pawn
                 select thing
             ).ToList();
