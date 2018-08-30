@@ -152,7 +152,7 @@ namespace HelpTab
             {
                 try
                 {
-                    _cachedDefIcons.Add(def, (pdef.lifeStages.Last().bodyGraphicData.Graphic.MatFront.mainTexture as Texture2D).Crop());
+                    _cachedDefIcons.Add(def, (pdef.lifeStages.Last().bodyGraphicData.Graphic.MatSouth.mainTexture as Texture2D).Crop());
                     return _cachedDefIcons[def];
                 }
                 catch

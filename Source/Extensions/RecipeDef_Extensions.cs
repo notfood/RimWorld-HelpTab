@@ -126,7 +126,7 @@ namespace HelpTab
             return thingDefs;
         }
 
-		public static bool TryFindBestRecipeIngredientsInSet_NoMix(this RecipeDef recipeDef, List<Thing> availableThings, List<ThingAmount> chosen)
+		public static bool TryFindBestRecipeIngredientsInSet_NoMix(this RecipeDef recipeDef, List<Thing> availableThings, List<ThingCount> chosen)
         {
             chosen.Clear();
             List<IngredientCount> ingredientsOrdered = new List<IngredientCount>();
@@ -171,7 +171,7 @@ namespace HelpTab
                             )
                             {
                                 int countToAdd = Mathf.Min(Mathf.FloorToInt(countRequiredFor), availableThings[thingsIndex].stackCount);
-                                ThingAmount.AddToList(chosen, availableThings[thingsIndex], countToAdd);
+                                ThingCountUtility.AddToList(chosen, availableThings[thingsIndex], countToAdd);
                                 countRequiredFor -= (float)countToAdd;
                                 assignedThings.Add(availableThings[thingsIndex]);
                                 if ((double)countRequiredFor < 1.0 / 1000.0)
@@ -197,7 +197,7 @@ namespace HelpTab
             return true;
         }
 
-        public static bool TryFindBestRecipeIngredientsInSet_AllowMix(this RecipeDef recipeDef, List<Thing> availableThings, List<ThingAmount> chosen)
+        public static bool TryFindBestRecipeIngredientsInSet_AllowMix(this RecipeDef recipeDef, List<Thing> availableThings, List<ThingCount> chosen)
         {
             chosen.Clear();
             for (int ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
@@ -211,7 +211,7 @@ namespace HelpTab
                     {
                         float ingredientValue = recipeDef.IngredientValueGetter.ValuePerUnitOf(thing.def);
                         int countToAdd = Mathf.Min(Mathf.CeilToInt(baseCount / ingredientValue), thing.stackCount);
-                        ThingAmount.AddToList(chosen, thing, countToAdd);
+                        ThingCountUtility.AddToList(chosen, thing, countToAdd);
                         baseCount -= (float)countToAdd * ingredientValue;
                         if ((double)baseCount <= 9.99999974737875E-05)
                         {

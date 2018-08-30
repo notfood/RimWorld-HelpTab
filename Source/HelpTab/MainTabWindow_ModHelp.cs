@@ -62,7 +62,7 @@ namespace HelpTab
             soundClose = null;
             doCloseButton = false;
             doCloseX = true;
-            closeOnEscapeKey = true;
+            closeOnCancel = true;
             forcePause = true;
         }
 

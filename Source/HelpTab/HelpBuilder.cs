@@ -131,7 +131,7 @@ namespace HelpTab
             // Get list of things
             var thingDefs = (
                 from thing in DefDatabase<ThingDef>.AllDefsListForReading
-                where typeof(ThingWithComps).IsAssignableFrom(thing.thingClass) && thing.isBodyPartOrImplant
+                where typeof(ThingWithComps).IsAssignableFrom(thing.thingClass) && thing.IsImplant()
                 select thing
             ).ToList();
 
@@ -655,7 +655,7 @@ namespace HelpTab
                     }
 
                     List<string> suffixes = new List<string>();
-                    suffixes.Add(thingDef.ingestible.nutrition.ToString("0.###"));
+                    suffixes.Add(thingDef.ingestible.CachedNutrition.ToString("0.###"));
                     if (Math.Abs(thingDef.ingestible.joy) > 1e-3)
                     {
                         suffixes.Add(thingDef.ingestible.joy.ToString("0.###"));
@@ -678,7 +678,7 @@ namespace HelpTab
 
                 if ((!thingDef.thingCategories.NullOrEmpty()) &&
                     (thingDef.thingCategories.Contains(ThingCategoryDefOf.BodyParts)) &&
-                    (thingDef.isBodyPartOrImplant))
+                    (thingDef.IsImplant()))
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
 
@@ -1436,7 +1436,7 @@ namespace HelpTab
                     ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
                     race.lifeExpectancy.ToStringApproxAge(),
                     race.foodType.ToHumanString(),
-                    race.TrainableIntelligence.ToString()
+                    race.trainability.ToString()
                 },
                 new[]
                 {
